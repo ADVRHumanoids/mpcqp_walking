@@ -44,10 +44,10 @@ namespace legged_robot
 class MPC
 {
 public:
-    MPC(const double &com_height = 1,
-    const double &foot_span = 0.15,
-    const double &foot_half_length = 0.1,
-    const double &foot_half_width = 0.05,
+    MPC(const double &com_height,
+    const double &foot_span,
+    const double &foot_half_length,
+    const double &foot_half_width,
         const unsigned int &single_support_knot_num = 15,
         const unsigned int &double_support_knot_num = 1,
         const unsigned int &preview_walking_step = 3,
@@ -58,9 +58,10 @@ public:
         const double &gravity = 9.81);
 
     /**
+     * TODO: THIS IS BUGGED! FIX IT!!!!
      * @brief MPC constructor, here we assume that the foot is symmetric
      * @param model a linear inverted pendulum model
-     * @param foot_span minimum y half distance between the center of the feet
+     * @param foot_span minimum y distance between the center of the feet
      * @param foot_half_length half lenght of the feet (from the center)
      * @param foot_half_width half width of the feet (from the center)
      * @param state_machine a state machine object
