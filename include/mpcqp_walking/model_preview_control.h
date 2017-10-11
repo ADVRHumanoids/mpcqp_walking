@@ -51,11 +51,11 @@ public:
         const unsigned int &single_support_knot_num = 15,
         const unsigned int &double_support_knot_num = 1,
         const unsigned int &preview_walking_step = 3,
-        const double &step_time = 0.1,
-        const double &jerk_weight = 1e-3,
-        const double &velocity_weight = 1e+1, // 1e+1
-        const double &zmp_weight = 1e+3,
-        const double &gravity = 9.81);
+        const double &step_time = DEFAULT_STEP_TIME,
+        const double &jerk_weight = DEFAULT_JERK_WEIGHT,
+        const double &velocity_weight = DEFAULT_VELOCITY_WEIGHT, // 1e+1
+        const double &zmp_weight = DEFAULT_ZMP_WEIGHT,
+        const double &gravity = DEFAULT_GRAVITY);
 
     /**
      * @brief MPC constructor, here we assume that the foot is symmetric
@@ -75,10 +75,10 @@ public:
     const double &foot_half_length,
     const double &foot_half_width,
         const StateMachine &state_machine,
-        const unsigned int &preview_walking_step = 3,
-        const double &jerk_weight = 1e-3,
-        const double &velocity_weight = 1e+1,
-        const double &zmp_weight = 1e+3);
+        const unsigned int &preview_walking_step = DEFAULT_PREVIEW_WALKING_STEP,
+        const double &jerk_weight = DEFAULT_JERK_WEIGHT,
+        const double &velocity_weight = DEFAULT_VELOCITY_WEIGHT,
+        const double &zmp_weight = DEFAULT_ZMP_WEIGHT);
 
     ~MPC();
     
@@ -87,10 +87,10 @@ public:
     const double &foot_half_length,
     const double &foot_half_width,
         const StateMachine &state_machine,
-        const unsigned int &preview_walking_step = 3,
-        const double &jerk_weight = 1e-3,
-        const double &velocity_weight = 1e+1,
-        const double &zmp_weight = 1e+3);
+        const unsigned int &preview_walking_step = DEFAULT_PREVIEW_WALKING_STEP,
+        const double &jerk_weight = DEFAULT_JERK_WEIGHT,
+        const double &velocity_weight = DEFAULT_VELOCITY_WEIGHT,
+        const double &zmp_weight = DEFAULT_ZMP_WEIGHT);
 
     void Next(AbstractVariable &next_state, AbstractVariable &current_state, const Eigen::VectorXd &dXkp1_ref, const Eigen::VectorXd &dYkp1_ref);
 

@@ -25,6 +25,7 @@
 #include <boost/concept_check.hpp>
 #include <eigen3/Eigen/Dense>
 #include <iostream>
+#include "defines.h"
 
 /// \namespace legged_robot
 namespace legged_robot
@@ -38,13 +39,17 @@ namespace legged_robot
 class LIPM
 {
 public:
+    LIPM();
+
     /**
      * @brief LIPM constructor
      * @param knot_time time between two consecutive knots in the mpc
      * @param com_height z com
      * @param gravity
      */
-    LIPM ( const double &knot_time = 0.1, const double &com_height = 1, const double &gravity = 9.81 );
+    LIPM ( const double &knot_time,
+           const double &com_height,
+           const double &gravity = DEFAULT_GRAVITY );
     ~LIPM();
 
     /// \brief system model: Xnext = A*X + B*U; ZMP = C*X.
