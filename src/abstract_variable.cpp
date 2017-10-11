@@ -74,4 +74,11 @@ AbstractVariable AbstractVariable::ToLocalCoordinate ( const unsigned int &expec
     return output;
 }
 
+void AbstractVariable::CalculateZMP(const double &gravity)
+{
+    zmp[2] = 0;
+    zmp[1] = com.pos[1] - com.acc[1]/(gravity+com.acc[2])*com.pos[2];
+    zmp[0] = com.pos[0] - com.acc[0]/(gravity+com.acc[2])*com.pos[2];
+}
+
 }

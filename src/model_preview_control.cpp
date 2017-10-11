@@ -19,25 +19,12 @@ MPC::MPC(const double &com_height,
          const double &zmp_weight,
          const double &gravity)
 {
-//     MPC(LIPM(knot_time, com_height, gravity),
-// 	foot_span,
-// 	StateMachine(single_support_knot_num, double_support_knot_num),
-// 	preview_walking_step,
-// 	jerk_weight,
-// 	velocity_weight,
-// 	zmp_weight
-//        );
-
-    model_ = LIPM(knot_time, com_height, gravity);
-    state_machine_ = StateMachine(single_support_knot_num, double_support_knot_num);
-    SetPreviewWalkingStep(preview_walking_step);
-    preview_knot_num_ = preview_walking_step * (single_support_knot_num + double_support_knot_num);
-    optimization_variable_num_ = 2 * (preview_knot_num_ + preview_walking_step);
-
-    SetWeight(jerk_weight, velocity_weight, zmp_weight);
-    SetFootSpan(foot_span);
-    SetFootSize(foot_half_length, foot_half_width);
-    GeneratePredictionMatrix();
+    Init(LIPM(knot_time, com_height, gravity),
+         foot_span,
+         foot_half_length, foot_half_width,
+         StateMachine(single_support_knot_num, double_support_knot_num),
+         preview_walking_step,
+         jerk_weight, velocity_weight, zmp_weight);
 }
 
 MPC::MPC(const LIPM &model,
@@ -50,21 +37,40 @@ MPC::MPC(const LIPM &model,
          const double &velocity_weight,
          const double &zmp_weight)
 {
+    Init(model,
+         foot_span,
+         foot_half_length, foot_half_width,
+         state_machine,
+         preview_walking_step,
+         jerk_weight, velocity_weight, zmp_weight);
+}
+
+MPC::~MPC()
+{
+
+}
+
+void MPC::Init(const LIPM &model,
+               const double &foot_span,
+               const double &foot_half_length,
+               const double &foot_half_width,
+               const StateMachine &state_machine,
+               const unsigned int &preview_walking_step,
+               const double &jerk_weight,
+               const double &velocity_weight,
+               const double &zmp_weight)
+{
     model_ = model;
     state_machine_ = state_machine;
     SetPreviewWalkingStep(preview_walking_step);
-    preview_knot_num_ = preview_walking_step * (state_machine_.GetSingleSupportKnotNumber(), state_machine_.GetDoubleSupportKnotNumber());
+    preview_knot_num_ = preview_walking_step * (state_machine_.GetSingleSupportKnotNumber() + state_machine_.GetDoubleSupportKnotNumber());
+    std::cout << "preview_knot_num_: " << preview_knot_num_ << std::endl;
     optimization_variable_num_ = 2 * (preview_knot_num_ + preview_walking_step);
 
     SetWeight(jerk_weight, velocity_weight, zmp_weight);
     SetFootSpan(foot_span);
     SetFootSize(foot_half_length, foot_half_width);
     GeneratePredictionMatrix();
-}
-
-MPC::~MPC()
-{
-
 }
 
 void MPC::GeneratePredictionMatrix()
@@ -227,10 +233,10 @@ void MPC::GenerateZMPConstrain()
 // 	      Ymax[i] = max(Ykfc_[0], Ykfc_[1])+foot_half_width_;
 // 	      Ymin[i] = min(Ykfc_[0], Ykfc_[1])-foot_half_width_;
 //             } else {
-                Xmax[i] = double_x_max;
-                Xmin[i] = double_x_min;
-                Ymax[i] = double_y_max;
-                Ymin[i] = double_y_min;
+            Xmax[i] = double_x_max;
+            Xmin[i] = double_x_min;
+            Ymax[i] = double_y_max;
+            Ymin[i] = double_y_min;
 //             }
             break;
         default:
@@ -266,7 +272,7 @@ void MPC::GeneratePlacementConstrain()
 //     cout << "ci:\n" << ci0_place_ << endl;
 }
 
-void MPC::Next(AbstractVariable& next_state, AbstractVariable &current_state, const VectorXd &dXkp1_ref, const VectorXd &dYkp1_ref)
+void MPC::Next(AbstractVariable &next_state, AbstractVariable &current_state, const VectorXd &dXkp1_ref, const VectorXd &dYkp1_ref)
 {
     current_phase_knot_num_ = current_state.current_phase_knot_num;
     current_state_ = current_state;
@@ -390,9 +396,9 @@ void MPC::Next(AbstractVariable& next_state, AbstractVariable &current_state, co
             z_duration = xy_duration;
             next_zstate << 0, 0, 0;
         }
-        QuinticPolynomial(current_xstate, next_xstate, xy_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_xstate);
-        QuinticPolynomial(current_ystate, next_ystate, xy_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_ystate);
-        QuinticPolynomial(current_zstate, next_zstate, z_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_zstate);
+        QuinticPolynomial(current_xstate, next_xstate, xy_duration * model_.GetModel().knot_time, model_.GetModel().knot_time, next_xstate);
+        QuinticPolynomial(current_ystate, next_ystate, xy_duration * model_.GetModel().knot_time, model_.GetModel().knot_time, next_ystate);
+        QuinticPolynomial(current_zstate, next_zstate, z_duration * model_.GetModel().knot_time, model_.GetModel().knot_time, next_zstate);
         next_state.rsole.pos << next_xstate[0], next_ystate[0], next_zstate[0];
         next_state.rsole.vel << next_xstate[1], next_ystate[1], next_zstate[1];
         next_state.rsole.acc << next_xstate[2], next_ystate[2], next_zstate[2];
@@ -420,9 +426,9 @@ void MPC::Next(AbstractVariable& next_state, AbstractVariable &current_state, co
             z_duration = xy_duration;
             next_zstate << 0, 0, 0;
         }
-        QuinticPolynomial(current_xstate, next_xstate, xy_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_xstate);
-        QuinticPolynomial(current_ystate, next_ystate, xy_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_ystate);
-        QuinticPolynomial(current_zstate, next_zstate, z_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_zstate);
+        QuinticPolynomial(current_xstate, next_xstate, xy_duration * model_.GetModel().knot_time, model_.GetModel().knot_time, next_xstate);
+        QuinticPolynomial(current_ystate, next_ystate, xy_duration * model_.GetModel().knot_time, model_.GetModel().knot_time, next_ystate);
+        QuinticPolynomial(current_zstate, next_zstate, z_duration * model_.GetModel().knot_time, model_.GetModel().knot_time, next_zstate);
         next_state.lsole.pos << next_xstate[0], next_ystate[0], next_zstate[0];
         next_state.lsole.vel << next_xstate[1], next_ystate[1], next_zstate[1];
         next_state.lsole.acc << next_xstate[2], next_ystate[2], next_zstate[2];

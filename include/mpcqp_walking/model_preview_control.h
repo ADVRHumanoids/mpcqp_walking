@@ -38,7 +38,7 @@ namespace legged_robot
 
 /// \class MPC
 ///
-/// \brief realize model preview control
+/// \brief realize model predictive control
 ///
 /// \example
 class MPC
@@ -58,7 +58,6 @@ public:
         const double &gravity = 9.81);
 
     /**
-     * TODO: THIS IS BUGGED! FIX IT!!!!
      * @brief MPC constructor, here we assume that the foot is symmetric
      * @param model a linear inverted pendulum model
      * @param foot_span minimum y distance between the center of the feet
@@ -82,6 +81,16 @@ public:
         const double &zmp_weight = 1e+3);
 
     ~MPC();
+    
+    void Init(const LIPM &model,
+    const double &foot_span,
+    const double &foot_half_length,
+    const double &foot_half_width,
+        const StateMachine &state_machine,
+        const unsigned int &preview_walking_step = 3,
+        const double &jerk_weight = 1e-3,
+        const double &velocity_weight = 1e+1,
+        const double &zmp_weight = 1e+3);
 
     void Next(AbstractVariable &next_state, AbstractVariable &current_state, const Eigen::VectorXd &dXkp1_ref, const Eigen::VectorXd &dYkp1_ref);
 

@@ -64,17 +64,21 @@ struct AbstractVariable {
     OnePoint rsole;
     unsigned int contact_state;
     unsigned int current_phase_knot_num;
+    Eigen::Vector3d zmp;
 
     virtual void log(XBot::MatLogger::Ptr logger, const std::string& id)
     {
+        CalculateZMP();
         com.log(logger, id+"_com");
         pelvis.log(logger, id+"_pelvis");
         lsole.log(logger, id+"_lsole");
         rsole.log(logger, id+"_rsole");
+        logger->add(id + "_zmp", zmp);
     }
 
     AbstractVariable ToLocalCoordinate();
     AbstractVariable ToLocalCoordinate ( const unsigned int &expected_contact_state, const bool &set_contact_state = false );
+    void CalculateZMP(const double &gravity = 9.81);
 };
 
 }
