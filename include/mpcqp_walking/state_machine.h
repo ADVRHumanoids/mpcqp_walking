@@ -41,6 +41,15 @@ public:
         kNoneContact, kLeftSupport, kRightSupport, kDoubleSupport
     };
 
+    /**
+     * @brief StateMachine constructor
+     * @param single_support_knot_num number of knots used for every single support phase
+     * NOTE: the time of the single support is given by:
+     *  single_support_knot_num * knot_time
+     * @param double_support_knot_num number of knots used for every double support phase
+     * NOTE: the time of the double support is given by:
+     *  double_support_knot_num * knot_time
+     */
     StateMachine(const unsigned int &single_support_knot_num = 10, const unsigned int &double_support_knot_num = 1);
     ~StateMachine();
 

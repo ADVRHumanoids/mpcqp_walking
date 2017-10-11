@@ -13,13 +13,13 @@ MPC::MPC(const double &com_height,
          const unsigned int &single_support_knot_num,
          const unsigned int &double_support_knot_num,
          const unsigned int &preview_walking_step,
-         const double &step_time,
+         const double &knot_time,
          const double &jerk_weight,
          const double &velocity_weight,
          const double &zmp_weight,
          const double &gravity)
 {
-//     MPC(LIPM(step_time, com_height, gravity),
+//     MPC(LIPM(knot_time, com_height, gravity),
 // 	foot_span,
 // 	StateMachine(single_support_knot_num, double_support_knot_num),
 // 	preview_walking_step,
@@ -28,7 +28,7 @@ MPC::MPC(const double &com_height,
 // 	zmp_weight
 //        );
 
-    model_ = LIPM(step_time, com_height, gravity);
+    model_ = LIPM(knot_time, com_height, gravity);
     state_machine_ = StateMachine(single_support_knot_num, double_support_knot_num);
     SetPreviewWalkingStep(preview_walking_step);
     preview_knot_num_ = preview_walking_step * (single_support_knot_num + double_support_knot_num);
@@ -391,9 +391,9 @@ AbstractVariable MPC::Next(AbstractVariable &current_state, const VectorXd &dXkp
             z_duration = xy_duration;
             next_zstate << 0, 0, 0;
         }
-        QuinticPolynomial(current_xstate, next_xstate, xy_duration*model_.GetModel().step_time, model_.GetModel().step_time, next_xstate);
-        QuinticPolynomial(current_ystate, next_ystate, xy_duration*model_.GetModel().step_time, model_.GetModel().step_time, next_ystate);
-        QuinticPolynomial(current_zstate, next_zstate, z_duration*model_.GetModel().step_time, model_.GetModel().step_time, next_zstate);
+        QuinticPolynomial(current_xstate, next_xstate, xy_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_xstate);
+        QuinticPolynomial(current_ystate, next_ystate, xy_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_ystate);
+        QuinticPolynomial(current_zstate, next_zstate, z_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_zstate);
         next_state.rsole.pos << next_xstate[0], next_ystate[0], next_zstate[0];
         next_state.rsole.vel << next_xstate[1], next_ystate[1], next_zstate[1];
         next_state.rsole.acc << next_xstate[2], next_ystate[2], next_zstate[2];
@@ -421,9 +421,9 @@ AbstractVariable MPC::Next(AbstractVariable &current_state, const VectorXd &dXkp
             z_duration = xy_duration;
             next_zstate << 0, 0, 0;
         }
-        QuinticPolynomial(current_xstate, next_xstate, xy_duration*model_.GetModel().step_time, model_.GetModel().step_time, next_xstate);
-        QuinticPolynomial(current_ystate, next_ystate, xy_duration*model_.GetModel().step_time, model_.GetModel().step_time, next_ystate);
-        QuinticPolynomial(current_zstate, next_zstate, z_duration*model_.GetModel().step_time, model_.GetModel().step_time, next_zstate);
+        QuinticPolynomial(current_xstate, next_xstate, xy_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_xstate);
+        QuinticPolynomial(current_ystate, next_ystate, xy_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_ystate);
+        QuinticPolynomial(current_zstate, next_zstate, z_duration*model_.GetModel().knot_time, model_.GetModel().knot_time, next_zstate);
         next_state.lsole.pos << next_xstate[0], next_ystate[0], next_zstate[0];
         next_state.lsole.vel << next_xstate[1], next_ystate[1], next_zstate[1];
         next_state.lsole.acc << next_xstate[2], next_ystate[2], next_zstate[2];

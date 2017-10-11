@@ -38,7 +38,13 @@ namespace legged_robot
 class LIPM
 {
 public:
-    LIPM ( const double &step_time = 0.1, const double &com_height = 1, const double &gravity = 9.81 );
+    /**
+     * @brief LIPM constructor
+     * @param knot_time time between two consecutive knots in the mpc
+     * @param com_height z com
+     * @param gravity
+     */
+    LIPM ( const double &knot_time = 0.1, const double &com_height = 1, const double &gravity = 9.81 );
     ~LIPM();
 
     /// \brief system model: Xnext = A*X + B*U; ZMP = C*X.
@@ -47,7 +53,7 @@ public:
         Eigen::Matrix3d A;
         Eigen::Vector3d B;
         Eigen::Vector3d C;
-    double step_time;
+    double knot_time;
     double com_height;
     double gravity;
     };
@@ -62,7 +68,7 @@ public:
 
     System GetModel();
 
-    void ResetModel( const double &step_time, const double &com_height, const double &gravity );
+    void ResetModel( const double &knot_time, const double &com_height, const double &gravity );
 
 private:
     System system_;

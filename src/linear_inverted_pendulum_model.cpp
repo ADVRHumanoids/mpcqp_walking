@@ -24,9 +24,9 @@ namespace legged_robot
 {
 using namespace Eigen;
 
-LIPM::LIPM ( const double &step_time, const double &com_height, const double &gravity )
+LIPM::LIPM ( const double &knot_time, const double &com_height, const double &gravity )
 {
-    ResetModel(step_time, com_height, gravity);
+    ResetModel(knot_time, com_height, gravity);
 }
 
 LIPM::~LIPM()
@@ -62,17 +62,17 @@ LIPM::System LIPM::GetModel()
     return system_;
 }
 
-void LIPM::ResetModel ( const double& step_time, const double& com_height, const double& gravity )
+void LIPM::ResetModel ( const double& knot_time, const double& com_height, const double& gravity )
 {
-    system_.step_time = step_time;
+    system_.knot_time = knot_time;
     system_.com_height = com_height;
     system_.gravity = gravity;
 
-    system_.A << 1, system_.step_time, pow ( system_.step_time, 2 ) /2,
-              0, 1, system_.step_time,
+    system_.A << 1, system_.knot_time, pow ( system_.knot_time, 2 ) /2,
+              0, 1, system_.knot_time,
               0, 0, 1;
 
-    system_.B << pow ( system_.step_time, 3 ) /6, pow ( system_.step_time, 2 ) /2, system_.step_time;
+    system_.B << pow ( system_.knot_time, 3 ) /6, pow ( system_.knot_time, 2 ) /2, system_.knot_time;
 
     system_.C << 1, 0, -system_.com_height/system_.gravity;
 }

@@ -59,6 +59,19 @@ public:
         const double &zmp_weight = 1e+3,
         const double &gravity = 9.81);
 
+    /**
+     * @brief MPC constructor, here we assume that the foot is symmetric
+     * @param model a linear inverted pendulum model
+     * @param foot_span minimum y half distance between the center of the feet
+     * @param foot_half_length half lenght of the feet (from the center)
+     * @param foot_half_width half width of the feet (from the center)
+     * @param state_machine a state machine object
+     * @param preview_walking_step number of steps to look forward for the optimization window,
+     * at least 2 steps are needed
+     * @param jerk_weight higher result in a smoother control input
+     * @param velocity_weight higher result in small tracking error of com velocities
+     * @param zmp_weight higher result in small deviation of the zmp wrt the feet center
+     */
     MPC(const LIPM &model,
     const double &foot_span,
     const double &foot_half_length,
