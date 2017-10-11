@@ -28,6 +28,7 @@ PROJECT(mpcqp_walking)
 
 FIND_PACKAGE(YCM REQUIRED)
 FIND_PACKAGE(Boost REQUIRED)
+FIND_PACKAGE(Eigen3 REQUIRED)
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -40,11 +41,13 @@ else()
     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
-INCLUDE_DIRECTORIES(include)
+INCLUDE_DIRECTORIES(include ${EIGEN3_INCLUDE_DIR})
 
 set(mpcqp_walking_sources src/linear_inverted_pendulum_model.cpp
                           src/state_machine.cpp
-                          src/abstract_variable.cpp)
+                          src/abstract_variable.cpp
+                          src/tools.cpp
+                          src/model_preview_control.cpp)
 
 ADD_LIBRARY(mpcqp_walking SHARED ${mpcqp_walking_sources})
 
