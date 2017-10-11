@@ -98,3 +98,7 @@ install_basic_package_files(mpcqp_walking   VARS_PREFIX ${VARS_PREFIX}
                                         NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
 include(AddUninstallTarget)
+
+## TESTS
+enable_testing()
+add_subdirectory(tests)
