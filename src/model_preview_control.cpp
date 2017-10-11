@@ -131,10 +131,10 @@ void MPC::GenerateUMatrix()
     for (unsigned int row = 0; row < preview_knot_num_; row++) {
         temp_state_machine.Next();
         current_state = temp_state_machine.GetContactState();
-        if ((current_state != last_state) && (last_state != kDoubleSupport)) {
+        if ((current_state != last_state) && (last_state != StateMachine::kDoubleSupport)) {
             col++;
         }
-        if (current_state == kDoubleSupport) {
+        if (current_state == StateMachine::kDoubleSupport) {
             U.block(row, col, 1, 2) << 0.5, 0.5;
         } else {
             U.block(row, col, 1, 2) << 0, 1;
@@ -169,7 +169,7 @@ void MPC::GeneratePVector()
 {
 //     Vector2d Xkfc;
 //     Vector2d Ykfc;
-    if (state_machine_.GetPreviousSupportLeg() == kLeftSupport) {
+    if (state_machine_.GetPreviousSupportLeg() == StateMachine::kLeftSupport) {
         Xkfc_[0] = current_state_.lsole.pos[0];
         Xkfc_[1] = current_state_.rsole.pos[0];
         Ykfc_[0] = current_state_.lsole.pos[1];
@@ -220,7 +220,7 @@ void MPC::GenerateZMPConstrain()
     for (unsigned int i = 0; i < preview_knot_num_; i++) {
         temp_state_machine.Next();
         switch (temp_state_machine.GetContactState()) {
-        case kDoubleSupport:
+        case StateMachine::kDoubleSupport:
 //             if (current_double_support = true) {
 // 	      Xmax[i] = max(Xkfc_[0], Xkfc_[1])+foot_half_length_;
 // 	      Xmin[i] = min(Xkfc_[0], Xkfc_[1])-foot_half_length_;
@@ -257,7 +257,7 @@ void MPC::GeneratePlacementConstrain()
     double leg_limit = 0.5; // 0.5
 
     ci0_place_.resize(4);
-    if (state_machine_.GetCurrentSupportLeg() == kLeftSupport) {
+    if (state_machine_.GetCurrentSupportLeg() == StateMachine::kLeftSupport) {
         ci0_place_ << current_state_.lsole.pos.head(2) + Vector2d(2 * leg_limit, -foot_span_), - (current_state_.lsole.pos.head(2) + Vector2d(-2 * leg_limit, -leg_limit - foot_span_));
     } else {
         ci0_place_ << current_state_.rsole.pos.head(2) + Vector2d(2 * leg_limit, leg_limit + foot_span_), - (current_state_.rsole.pos.head(2) + Vector2d(-2 * leg_limit, foot_span_));
@@ -266,7 +266,7 @@ void MPC::GeneratePlacementConstrain()
 //     cout << "ci:\n" << ci0_place_ << endl;
 }
 
-AbstractVariable MPC::Next(AbstractVariable &current_state, const VectorXd &dXkp1_ref, const VectorXd &dYkp1_ref)
+void MPC::Next(AbstractVariable& next_state, AbstractVariable &current_state, const VectorXd &dXkp1_ref, const VectorXd &dYkp1_ref)
 {
     current_phase_knot_num_ = current_state.current_phase_knot_num;
     current_state_ = current_state;
@@ -343,7 +343,6 @@ AbstractVariable MPC::Next(AbstractVariable &current_state, const VectorXd &dXkp
     VectorXd zmp_x = Pzs_ * com_x + Pzu_ * dddx;
     VectorXd zmp_y = Pzs_ * com_y + Pzu_ * dddy;
 
-    AbstractVariable next_state;
     next_state.com.pos << x[0], y[0], model_.GetModel().com_height;
     next_state.com.vel << dx[0], dy[0], 0;
     next_state.com.acc << ddx[0], ddy[0], 0;
@@ -368,7 +367,7 @@ AbstractVariable MPC::Next(AbstractVariable &current_state, const VectorXd &dXkp
 //         next_state.rsole = current_state_.rsole;
 //     } else {
     switch (current_state_.contact_state) {
-    case kLeftSupport: {
+    case StateMachine::kLeftSupport: {
         next_state.lsole = current_state_.lsole;
 //         next_state.rsole.pos << X[preview_knot_num_], X[preview_knot_num_ * 2 + preview_walking_step_], 0;
 //         next_state.rsole.vel << dx[current_phase_knot_num_ - 1], dy[current_phase_knot_num_ - 1], 0;
@@ -399,7 +398,7 @@ AbstractVariable MPC::Next(AbstractVariable &current_state, const VectorXd &dXkp
         next_state.rsole.acc << next_xstate[2], next_ystate[2], next_zstate[2];
         break;
     }
-    case kRightSupport: {
+    case StateMachine::kRightSupport: {
         next_state.rsole = current_state_.rsole;
 //         next_state.lsole.pos << X[preview_knot_num_], X[preview_knot_num_ * 2 + preview_walking_step_], 0;
 //         next_state.lsole.vel << dx[current_phase_knot_num_ - 1], dy[current_phase_knot_num_ - 1], 0;
@@ -436,7 +435,6 @@ AbstractVariable MPC::Next(AbstractVariable &current_state, const VectorXd &dXkp
     }
 //     }
 
-    return next_state;
 }
 
 unsigned int MPC::GetSingleSupportKnotNumber()
@@ -494,18 +492,18 @@ void MPC::SetPreviewWalkingStep(const unsigned int &num)
 
 void MPC::SetPreviouSupportLeg(const unsigned int &previous_support_leg)
 {
-    if (previous_support_leg == kLeftSupport)
-        state_machine_.SetPreviouSupportLeg(kLeftSupport);
+    if (previous_support_leg == StateMachine::kLeftSupport)
+        state_machine_.SetPreviouSupportLeg(StateMachine::kLeftSupport);
     else
-        state_machine_.SetPreviouSupportLeg(kRightSupport);
+        state_machine_.SetPreviouSupportLeg(StateMachine::kRightSupport);
 }
 
 void MPC::InversePreviouSupportLeg()
 {
-    if (state_machine_.GetPreviousSupportLeg() == kLeftSupport)
-        state_machine_.SetPreviouSupportLeg(kRightSupport);
+    if (state_machine_.GetPreviousSupportLeg() == StateMachine::kLeftSupport)
+        state_machine_.SetPreviouSupportLeg(StateMachine::kRightSupport);
     else
-        state_machine_.SetPreviouSupportLeg(kLeftSupport);
+        state_machine_.SetPreviouSupportLeg(StateMachine::kLeftSupport);
 }
 
 void MPC::SetWeight(const double &jerk_weight, const double &velocity_weight, const double &zmp_weight)

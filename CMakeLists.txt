@@ -29,6 +29,7 @@ PROJECT(mpcqp_walking)
 FIND_PACKAGE(YCM REQUIRED)
 FIND_PACKAGE(Boost REQUIRED)
 FIND_PACKAGE(Eigen3 REQUIRED)
+FIND_PACKAGE(XBotInterface REQUIRED)
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -41,7 +42,7 @@ else()
     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
-INCLUDE_DIRECTORIES(include ${EIGEN3_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(include ${EIGEN3_INCLUDE_DIR} ${XBotInterface_INCLUDE_DIRS})
 
 set(mpcqp_walking_sources src/linear_inverted_pendulum_model.cpp
                           src/state_machine.cpp
@@ -53,7 +54,7 @@ set(mpcqp_walking_sources src/linear_inverted_pendulum_model.cpp
 
 ADD_LIBRARY(mpcqp_walking SHARED ${mpcqp_walking_sources})
 
-TARGET_LINK_LIBRARIES(mpcqp_walking ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(mpcqp_walking ${Boost_LIBRARIES} ${XBotInterface_LIBRARIES})
 
 ########################################################################
 # use YCM to export mpcqp_walking so that it can be found using find_package #

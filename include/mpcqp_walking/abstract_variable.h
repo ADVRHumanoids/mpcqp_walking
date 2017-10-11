@@ -25,6 +25,7 @@
 #include <boost/concept_check.hpp>
 #include <eigen3/Eigen/Dense>
 #include "state_machine.h"
+#include <XBotInterface/Logger.hpp>
 
 
 /// \namespace legged_robot
@@ -42,6 +43,18 @@ struct OnePoint {
 
     OnePoint();
     ~OnePoint();
+
+    virtual void log(XBot::MatLogger::Ptr logger, const std::string& id)
+    {
+        logger->add(id + "_pos", pos);
+        logger->add(id + "_vel", vel);
+        logger->add(id + "_acc", acc);
+
+        logger->add(id + "_euler_pos", euler_pos);
+        logger->add(id + "_euler_vel", euler_vel);
+        logger->add(id + "_euler_acc", euler_acc);
+    }
+
 };
 
 struct AbstractVariable {
@@ -51,6 +64,14 @@ struct AbstractVariable {
     OnePoint rsole;
     unsigned int contact_state;
     unsigned int current_phase_knot_num;
+
+    virtual void log(XBot::MatLogger::Ptr logger, const std::string& id)
+    {
+        com.log(logger, id+"_com");
+        pelvis.log(logger, id+"_pelvis");
+        lsole.log(logger, id+"_lsole");
+        rsole.log(logger, id+"_rsole");
+    }
 
     AbstractVariable ToLocalCoordinate();
     AbstractVariable ToLocalCoordinate ( const unsigned int &expected_contact_state, const bool &set_contact_state = false );

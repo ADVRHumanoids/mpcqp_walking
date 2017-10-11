@@ -30,9 +30,7 @@
 #include <iostream>
 #include <eigen3/unsupported/Eigen/MatrixFunctions> // for using MatrixPower<MatrixXd> Apow(A) to calculate A^n
 #include "eigen_quadsolve.hpp"
-//#include "utils/saveEigen.h"
-//#include "utils/tools.h"
-#include "variable/abstract_variable.hpp"
+#include "abstract_variable.h"
 
 /// \namespace legged_robot
 namespace legged_robot
@@ -84,7 +82,7 @@ public:
 
     ~MPC();
 
-    AbstractVariable Next(AbstractVariable &current_state, const Eigen::VectorXd &dXkp1_ref, const Eigen::VectorXd &dYkp1_ref);
+    void Next(AbstractVariable &next_state, AbstractVariable &current_state, const Eigen::VectorXd &dXkp1_ref, const Eigen::VectorXd &dYkp1_ref);
 
     unsigned int GetPreviewKnotNumber();
 
