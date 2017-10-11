@@ -42,7 +42,9 @@ endif()
 
 INCLUDE_DIRECTORIES(include)
 
-set(mpcqp_walking_sources src/linear_inverted_pendulum_model.cpp)
+set(mpcqp_walking_sources src/linear_inverted_pendulum_model.cpp
+                          src/state_machine.cpp
+                          src/abstract_variable.cpp)
 
 ADD_LIBRARY(mpcqp_walking SHARED ${mpcqp_walking_sources})
 

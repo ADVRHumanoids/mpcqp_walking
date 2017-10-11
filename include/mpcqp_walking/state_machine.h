@@ -1,7 +1,7 @@
 /*
   Copyright (C) 2017 cogimon
-  Author:  Yangwei You
-  email: yangwei.you@iit.it
+  Author:  Yangwei You, Enrico Mingo Hoffman
+  email: yangwei.you@iit.it, enrico.mingo@iit.it
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as published by
@@ -37,6 +37,10 @@ namespace legged_robot
 class StateMachine
 {
 public:
+    enum ContactState {
+        kNoneContact, kLeftSupport, kRightSupport, kDoubleSupport
+    };
+
     StateMachine(const unsigned int &single_support_knot_num = 10, const unsigned int &double_support_knot_num = 1);
     ~StateMachine();
 
@@ -63,9 +67,7 @@ public:
     void SetPreviouSupportLeg( const unsigned int &previous_support_leg);
 
 private:
-    enum ContactState {
-        kNoneContact, kLeftSupport, kRightSupport, kDoubleSupport
-    };
+
 
     unsigned int contact_state_;
 
