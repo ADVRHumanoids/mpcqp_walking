@@ -44,28 +44,36 @@ public:
      * @param pelvis_frame name of a frame in the pelvis
      * feet
      */
-    Walker(const XBot::ModelInterface& robot, const double dT,
+    Walker(XBot::ModelInterface& robot, const double dT,
            const double single_support_phase_time, const double double_support_phase_time,
            const double horizontal_center_feet_distance,
-           const Eigen::Vector2cd& foot_size,
+           const Eigen::Vector2d& foot_size,
            const std::string& l_foot_center_frame,
            const std::string& r_foot_center_frame,
-           const std::string& pelvis_frame,);
+           const std::string& pelvis_frame);
     ~Walker();
 
     /**
      * @brief setCurrentState from a ModelInterface
      * @param robot reference to a model
      */
-    void setCurrentState(const XBot::ModelInterface& robot);
+    bool setCurrentState(const XBot::ModelInterface& robot,
+                         const StateMachine::ContactState contact_state);
 
     /**
      * @brief setCurrentState from a state
      * @param state a state
      */
-    void setCurrentState(const AbstractVariable& state);
+    bool setCurrentState(const AbstractVariable& state);
 
-    //void log(XBot::MatLogger::Ptr logger, const std::string& id);
+    void setReference(const Eigen::Vector2d& xy_com_twist);
+
+    void solve(legged_robot::AbstractVariable& new_state);
+
+    void log(XBot::MatLogger::Ptr logger, const std::string& id)
+    {
+        _current_state.log(logger, id+"_current_state");
+    }
 
 private:
     XBot::ModelInterface& _robot;
@@ -92,6 +100,8 @@ private:
     std::string _l_frame;
     std::string _r_frame;
     std::string _pelvis_frame;
+
+    Eigen::MatrixXd _com_desired_twist_window;
 };
 
 }

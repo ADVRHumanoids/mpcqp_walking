@@ -21,9 +21,9 @@
 
 namespace legged_robot{
 
-Walker::Walker(const XBot::ModelInterface &robot, const double dT,
+Walker::Walker(XBot::ModelInterface &robot, const double dT,
                const double single_support_phase_time, const double double_support_phase_time,
-               const double horizontal_center_feet_distance, const Eigen::Vector2cd &foot_size,
+               const double horizontal_center_feet_distance, const Eigen::Vector2d &foot_size,
                const std::string& l_foot_center_frame, const std::string& r_foot_center_frame,
                const std::string& pelvis_frame):
     _robot(robot),
@@ -36,9 +36,11 @@ Walker::Walker(const XBot::ModelInterface &robot, const double dT,
     _r_frame(r_foot_center_frame),
     _pelvis_frame(pelvis_frame)
 {
-    _robot.getCOM(_com);
+    if(!setCurrentState(_robot, StateMachine::kDoubleSupport)) //here we assumes robot start in double support
+        std::cout<<"ERROR! CAN NOT SET CURRENT STATE!"<<std::endl;
+    _current_state.current_phase_knot_num = DEFAULT_CURRENT_PHASE_KNOT_NUM;
 
-    _robot_lipm.reset(new LIPM(dT, _com[2]));
+    _robot_lipm.reset(new LIPM(dT, _current_state.com.pos[2]));
 
     if(single_support_phase_time >= dT && double_support_phase_time >= dT)
         _sm.reset(new StateMachine(int(single_support_phase_time/dT),
@@ -48,28 +50,49 @@ Walker::Walker(const XBot::ModelInterface &robot, const double dT,
 
 
 
-    _mpc.reset(new MPC(_robot_lipm,
+    _mpc.reset(new MPC(*_robot_lipm,
                        _horizontal_center_feet_distance,
                        _foot_size[0]/2., _foot_size[1]/2.,
-                       _sm));
+                       *_sm));
 
-
+    _com_desired_twist_window.resize(2,_mpc->GetOptimizationVariableNum());
+    _com_desired_twist_window.setZero(2,_mpc->GetOptimizationVariableNum());
 }
 
-void Walker::setCurrentState(const AbstractVariable &state)
+void Walker::setReference(const Eigen::Vector2d& xy_com_twist)
+{
+    _com_desired_twist_window<<Eigen::MatrixXd::Constant(1,_mpc->GetOptimizationVariableNum(), xy_com_twist[0]),
+                               Eigen::MatrixXd::Constant(1,_mpc->GetOptimizationVariableNum(), xy_com_twist[1]);
+}
+
+void Walker::solve(legged_robot::AbstractVariable& new_state)
+{
+    _mpc->Next(new_state, _current_state, _com_desired_twist_window.row(0), _com_desired_twist_window.row(1));
+}
+
+bool Walker::setCurrentState(const AbstractVariable &state)
 {
     _current_state = state;
+    return true;
 }
 
-void Walker::setCurrentState(const XBot::ModelInterface &robot)
+bool Walker::setCurrentState(const XBot::ModelInterface &robot,
+                             const StateMachine::ContactState contact_state)
 {
+    bool a;
+
     robot.getCOM(_current_state.com.pos);
-    robot.getPose(_l_frame, _tmp_affine);
+    a = robot.getPose(_l_frame, _tmp_affine);
     _current_state.lsole.pos = _tmp_affine.translation(); ///TODO: add orientation!
-    robot.getPose(_r_frame, _tmp_affine);
+    a = a && robot.getPose(_r_frame, _tmp_affine);
     _current_state.rsole.pos = _tmp_affine.translation(); ///TODO: add orientation!
-    robot.getPose(_pelvis_frame, _tmp_affine);
+    a = a && robot.getPose(_pelvis_frame, _tmp_affine);
     _current_state.pelvis.pos = _tmp_affine.translation(); ///TODO: add orientation!
+
+    if(!a)
+        return false;
+    _current_state.contact_state = contact_state;
+    return true;
 }
 
 Walker::~Walker()
