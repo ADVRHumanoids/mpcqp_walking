@@ -29,6 +29,14 @@ private:
     double duration_;
     double current_time_;
     double step_time_;
+    Eigen::Matrix3d com_state_;
+    Eigen::Matrix3d pelvis_state_;
+    Eigen::Matrix3d lsole_state_;
+    Eigen::Matrix3d rsole_state_;
+    Eigen::Vector3d com_jerk_;
+    Eigen::Vector3d pelvis_jerk_;
+    Eigen::Vector3d lsole_jerk_;
+    Eigen::Vector3d rsole_jerk_;
     std::vector<QuinticPolynomial> poly_;
     unsigned int poly_num_;
 };
