@@ -70,6 +70,11 @@ public:
 
     void solve(legged_robot::AbstractVariable& new_state);
 
+    const legged_robot::AbstractVariable& getCurrentState() const
+    {
+        return _current_state;
+    }
+
     void log(XBot::MatLogger::Ptr logger, const std::string& id)
     {
         _current_state.log(logger, id+"_current_state");
