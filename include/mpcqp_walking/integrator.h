@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <eigen3/Eigen/Dense>
-#include "quintic_polynomial.h"
 #include "abstract_variable.h"
 
 /// \namespace legged_robot
@@ -37,8 +36,6 @@ private:
     Eigen::Vector3d pelvis_jerk_;
     Eigen::Vector3d lsole_jerk_;
     Eigen::Vector3d rsole_jerk_;
-    std::vector<QuinticPolynomial> poly_;
-    unsigned int poly_num_;
 };
 
 }
