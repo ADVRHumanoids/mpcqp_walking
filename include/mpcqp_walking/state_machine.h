@@ -25,6 +25,7 @@
 #include <boost/concept_check.hpp>
 #include <eigen3/Eigen/Dense>
 #include "linear_inverted_pendulum_model.h"
+#include "defines.h"
 
 /// \namespace legged_robot
 namespace legged_robot
@@ -50,7 +51,8 @@ public:
      * NOTE: the time of the double support is given by:
      *  double_support_knot_num * knot_time
      */
-    StateMachine(const unsigned int &single_support_knot_num = 10, const unsigned int &double_support_knot_num = 1);
+    StateMachine(const unsigned int &single_support_knot_num = DEFAULT_SINGLE_SUPPORT_KNOT_NUM,
+                 const unsigned int &double_support_knot_num = DEFAULT_DOUBLE_SUPPORT_KNOT_NUM);
     ~StateMachine();
 
     unsigned int SetStartState(const unsigned int &contact_state, const unsigned int &current_phase_knot_num);

@@ -19,10 +19,10 @@ public:
 
         robot.reset(new legged_robot::LIPM(ctrl_loop, com_z));
         
-//         wpg.reset(new legged_robot::MPC(*robot, foot_span, foot_size[0], foot_size[1], this->sm));
+         wpg.reset(new legged_robot::MPC(*robot, foot_span, foot_size[0]/2., foot_size[1]/2., this->sm));
 
-        wpg.reset(new legged_robot::MPC(com_z, foot_span,
-                                        foot_size[0]/2., foot_size[1]/2.));
+//        wpg.reset(new legged_robot::MPC(com_z, foot_span,
+//                                        foot_size[0]/2., foot_size[1]/2.));
     }
 
     virtual ~testMPC() {

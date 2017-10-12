@@ -24,6 +24,11 @@ namespace legged_robot
 {
 using namespace Eigen;
 
+LIPM::LIPM()
+{
+    ResetModel(0.0, 0.0, DEFAULT_GRAVITY);
+}
+
 LIPM::LIPM ( const double &knot_time, const double &com_height, const double &gravity )
 {
     ResetModel(knot_time, com_height, gravity);
