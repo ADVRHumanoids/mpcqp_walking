@@ -47,10 +47,9 @@ INCLUDE_DIRECTORIES(include ${EIGEN3_INCLUDE_DIR} ${XBotInterface_INCLUDE_DIRS})
 set(mpcqp_walking_sources src/linear_inverted_pendulum_model.cpp
                           src/state_machine.cpp
                           src/abstract_variable.cpp
-                          src/tools.cpp
                           src/model_preview_control.cpp
-                          src/quintic_plynomial.cpp
-                          src/integrator.cpp)
+                          src/integrator.cpp
+                          src/tools.cpp)
 
 ADD_LIBRARY(mpcqp_walking SHARED ${mpcqp_walking_sources})
 
