@@ -50,7 +50,8 @@ set(mpcqp_walking_sources src/linear_inverted_pendulum_model.cpp
                           src/tools.cpp
                           src/model_preview_control.cpp
                           src/quintic_plynomial.cpp
-                          src/integrator.cpp)
+                          src/integrator.cpp
+                          src/walker.cpp)
 
 ADD_LIBRARY(mpcqp_walking SHARED ${mpcqp_walking_sources})
 

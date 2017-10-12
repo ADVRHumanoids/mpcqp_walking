@@ -86,11 +86,14 @@ TEST_F(testMPC, test_wpg)
     legged_robot::AbstractVariable next_state;
     legged_robot::AbstractVariable references;
 
+    std::vector<double> forward_steps;
+
     for(unsigned int i = 0; i < loops; ++i)
     {
         Eigen::Vector2d xy_com_desired_twist_instantaneous;
         xy_com_desired_twist_instantaneous<<0.1-i*1e-3, 0.0;
         logger->add("xy_dcom_ref", xy_com_desired_twist_instantaneous);
+        forward_steps.push_back(xy_com_desired_twist_instantaneous[0]);
 
         fillCoMTwist(xy_com_desired_twist_instantaneous);
 
@@ -108,7 +111,6 @@ TEST_F(testMPC, test_wpg)
         }
 
         this->current_state = next_state; //state update
-
 
     }
 
