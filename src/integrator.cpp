@@ -14,9 +14,11 @@ Integrator::Integrator()
 
 Integrator::Integrator(const AbstractVariable &start, const AbstractVariable &end, const double &duration, const double &step_time)
 {
-    current_value_ = start;
+    current_time_ = 0;
     duration_ = duration;
     step_time_ = step_time;
+    
+    current_value_ = start;
     
     com_state_ << start.com.pos, start.com.vel, start.com.acc;
     pelvis_state_ << start.pelvis.pos, start.pelvis.vel, start.pelvis.acc;
