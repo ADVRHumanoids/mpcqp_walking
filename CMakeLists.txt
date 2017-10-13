@@ -49,7 +49,8 @@ set(mpcqp_walking_sources src/linear_inverted_pendulum_model.cpp
                           src/abstract_variable.cpp
                           src/model_preview_control.cpp
                           src/integrator.cpp
-                          src/tools.cpp)
+                          src/tools.cpp
+                          src/walker.cpp)
 
 ADD_LIBRARY(mpcqp_walking SHARED ${mpcqp_walking_sources})
 
