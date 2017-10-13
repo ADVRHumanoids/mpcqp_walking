@@ -23,22 +23,22 @@ namespace legged_robot{
 
 Walker::Walker(XBot::ModelInterface &robot, const double dT,
                const double single_support_phase_time, const double double_support_phase_time,
-               const double horizontal_center_feet_distance, const Eigen::Vector2d &foot_size,
+               const Eigen::Vector2d &foot_size,
                const std::string& l_foot_center_frame, const std::string& r_foot_center_frame,
                const std::string& pelvis_frame):
     _robot(robot),
     _dT(dT),
     _single_support_phase_time(single_support_phase_time),
     _double_support_phase_time(double_support_phase_time),
-    _horizontal_center_feet_distance(horizontal_center_feet_distance),
     _foot_size(foot_size),
     _l_frame(l_foot_center_frame),
     _r_frame(r_foot_center_frame),
-    _pelvis_frame(pelvis_frame)
+    _pelvis_frame(pelvis_frame),
+    _step_height(DEFAULT_GROUND_CLEARNESS)
 {
     if(!setCurrentState(_robot, StateMachine::kDoubleSupport)) //here we assumes robot start in double support
         std::cout<<"ERROR! CAN NOT SET CURRENT STATE!"<<std::endl;
-    _current_state.current_phase_knot_num = DEFAULT_CURRENT_PHASE_KNOT_NUM;
+    _current_state.current_phase_knot_num = DEFAULT_CURRENT_PHASE_KNOT_NUM+10;
 
     _robot_lipm.reset(new LIPM(dT, _current_state.com.pos[2]));
 
@@ -48,6 +48,8 @@ Walker::Walker(XBot::ModelInterface &robot, const double dT,
     else
         std::cout<<"ERROR! SINGLE/DOUBLE SUPPORT PHASE < dT!"<<std::endl;
 
+
+    double _horizontal_center_feet_distance = _current_state.lsole.pos[1]-_current_state.rsole.pos[1];
 
 
     _mpc.reset(new MPC(*_robot_lipm,
@@ -67,7 +69,9 @@ void Walker::setReference(const Eigen::Vector2d& xy_com_twist)
 
 void Walker::solve(legged_robot::AbstractVariable& new_state)
 {
-    _mpc->Next(new_state, _current_state, _com_desired_twist_window.row(0), _com_desired_twist_window.row(1));
+    _mpc->Next(new_state, _current_state,
+               _com_desired_twist_window.row(0), _com_desired_twist_window.row(1),
+               _step_height);
 }
 
 bool Walker::setCurrentState(const AbstractVariable &state)
@@ -77,7 +81,7 @@ bool Walker::setCurrentState(const AbstractVariable &state)
 }
 
 bool Walker::setCurrentState(const XBot::ModelInterface &robot,
-                             const StateMachine::ContactState contact_state)
+                             const unsigned int contact_state)
 {
     bool a;
 

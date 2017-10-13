@@ -22,6 +22,7 @@ public:
     AbstractVariable Output(const double &time);
     AbstractVariable TickAndOuput();
     bool IsExpired();
+    void set(const AbstractVariable &start, const AbstractVariable &end, const double &duration, const double &step_time);
 
 private:
     AbstractVariable current_value_;

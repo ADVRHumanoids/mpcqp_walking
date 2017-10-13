@@ -209,7 +209,6 @@ TEST_F(testMPC, test_walker)
     legged_robot::Walker walker(*(this->_model), this->ctrl_loop,
                                 DEFAULT_SINGLE_SUPPORT_KNOT_NUM*this->ctrl_loop,
                                 DEFAULT_DOUBLE_SUPPORT_KNOT_NUM*this->ctrl_loop,
-                                this->foot_span,
                                 this->foot_size,
                                 "l_sole", "r_sole", "Waist");
 

@@ -272,7 +272,9 @@ void MPC::GeneratePlacementConstrain()
 //     cout << "ci:\n" << ci0_place_ << endl;
 }
 
-void MPC::Next(AbstractVariable &next_state, AbstractVariable &current_state, const VectorXd &dXkp1_ref, const VectorXd &dYkp1_ref)
+void MPC::Next(AbstractVariable &next_state, AbstractVariable &current_state,
+               const VectorXd &dXkp1_ref, const VectorXd &dYkp1_ref,
+               const double ground_clearness)
 {
     current_phase_knot_num_ = current_state.current_phase_knot_num;
     current_state_ = current_state;
@@ -360,12 +362,12 @@ void MPC::Next(AbstractVariable &next_state, AbstractVariable &current_state, co
 
     next_state.contact_state = state_machine_.Next();
     next_state.current_phase_knot_num = state_machine_.GetCurrentPhaseKnotNumber();
-    double ground_clearness = 0.15;
+
     unsigned int transfer_knot = 0;
     unsigned int xy_duration = current_state_.current_phase_knot_num - transfer_knot;
     unsigned int mid_phase = (state_machine_.GetSingleSupportKnotNumber() - transfer_knot) / 2;
     unsigned int z_duration;
-    double frequency = 10;
+
     // TODO clean the dirty double support phase
 //     if (current_state_.contact_state != next_state.contact_state && current_state_.contact_state != kDoubleSupport) {
 //         current_state.contact_state = kDoubleSupport;

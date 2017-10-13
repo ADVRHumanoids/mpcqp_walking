@@ -26,7 +26,8 @@ add_custom_command( TARGET mpcqp_walking POST_BUILD
            COMMAND ${CMAKE_CTEST_COMMAND}
            MAIN_DEPENDENCY mpcqp_walking
            DEPENDS
-           testMPC)
+           testMPC
+           testMPC2)
 
 
 SET(TestLibs mpcqp_walking ${GTEST_BOTH_LIBRARIES})
@@ -36,3 +37,9 @@ TARGET_LINK_LIBRARIES(testMPC ${TestLibs} pthread)
 add_dependencies(testMPC GTest-ext mpcqp_walking)
 
 add_test(NAME mpc_test COMMAND testMPC)
+
+ADD_EXECUTABLE(testMPC2     mpc_test2.cpp)
+TARGET_LINK_LIBRARIES(testMPC2 ${TestLibs} pthread)
+add_dependencies(testMPC2 GTest-ext mpcqp_walking)
+
+add_test(NAME mpc_test2 COMMAND testMPC2)

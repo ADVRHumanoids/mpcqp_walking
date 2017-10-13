@@ -31,6 +31,25 @@ Integrator::Integrator(const AbstractVariable &start, const AbstractVariable &en
     rsole_jerk_ = 1 / duration * (end.rsole.acc - start.rsole.acc);
 }
 
+void Integrator::set(const AbstractVariable &start, const AbstractVariable &end, const double &duration, const double &step_time)
+{
+    current_time_ = 0;
+    duration_ = duration;
+    step_time_ = step_time;
+
+    current_value_ = start;
+
+    com_state_ << start.com.pos, start.com.vel, start.com.acc;
+    pelvis_state_ << start.pelvis.pos, start.pelvis.vel, start.pelvis.acc;
+    lsole_state_<< start.lsole.pos, start.lsole.vel, start.lsole.acc;
+    rsole_state_ << start.rsole.pos, start.rsole.vel, start.rsole.acc;
+
+    com_jerk_ = 1 / duration * (end.com.acc - start.com.acc);
+    pelvis_jerk_ = 1 / duration * (end.pelvis.acc - start.pelvis.acc);
+    lsole_jerk_ = 1 / duration * (end.lsole.acc - start.lsole.acc);
+    rsole_jerk_ = 1 / duration * (end.rsole.acc - start.rsole.acc);
+}
+
 
 Integrator::~Integrator()
 {

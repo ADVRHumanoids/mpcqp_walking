@@ -46,7 +46,6 @@ public:
      */
     Walker(XBot::ModelInterface& robot, const double dT,
            const double single_support_phase_time, const double double_support_phase_time,
-           const double horizontal_center_feet_distance,
            const Eigen::Vector2d& foot_size,
            const std::string& l_foot_center_frame,
            const std::string& r_foot_center_frame,
@@ -58,7 +57,7 @@ public:
      * @param robot reference to a model
      */
     bool setCurrentState(const XBot::ModelInterface& robot,
-                         const StateMachine::ContactState contact_state);
+                         const unsigned int contact_state);
 
     /**
      * @brief setCurrentState from a state
@@ -80,6 +79,30 @@ public:
         _current_state.log(logger, id+"_current_state");
     }
 
+    double getDuration()
+    {
+        return _dT;
+    }
+
+    void setStepHeight(const double height)
+    {
+        if(height > 0.)
+            _step_height = height;
+    }
+
+    void setFootSpan(const double foot_span)
+    {
+        if(foot_span > 0.)
+            _mpc->SetFootSpan(foot_span);
+    }
+
+    double getFootSpan()
+    {
+        return _mpc->GetFootSpan();
+    }
+
+
+
 private:
     XBot::ModelInterface& _robot;
     boost::shared_ptr<LIPM> _robot_lipm;
@@ -96,7 +119,7 @@ private:
     double _dT;
     double _single_support_phase_time;
     double _double_support_phase_time;
-    double _horizontal_center_feet_distance;
+    double _step_height;
 
     Eigen::Vector2d _foot_size;
 
