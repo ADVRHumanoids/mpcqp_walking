@@ -53,13 +53,6 @@ public:
     ~Walker();
 
     /**
-     * @brief setCurrentState from a ModelInterface
-     * @param robot reference to a model
-     */
-    bool setCurrentState(const XBot::ModelInterface& robot,
-                         const unsigned int contact_state);
-
-    /**
      * @brief setCurrentState from a state
      * @param state a state
      */
@@ -104,10 +97,12 @@ public:
 
 
 private:
-    XBot::ModelInterface& _robot;
     boost::shared_ptr<LIPM> _robot_lipm;
     boost::shared_ptr<StateMachine> _sm;
     boost::shared_ptr<MPC> _mpc;
+
+    bool initFromRobot(const XBot::ModelInterface& robot,
+                         const unsigned int contact_state);
 
 
     /**

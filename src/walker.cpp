@@ -26,7 +26,6 @@ Walker::Walker(XBot::ModelInterface &robot, const double dT,
                const Eigen::Vector2d &foot_size,
                const std::string& l_foot_center_frame, const std::string& r_foot_center_frame,
                const std::string& pelvis_frame):
-    _robot(robot),
     _dT(dT),
     _single_support_phase_time(single_support_phase_time),
     _double_support_phase_time(double_support_phase_time),
@@ -36,7 +35,7 @@ Walker::Walker(XBot::ModelInterface &robot, const double dT,
     _pelvis_frame(pelvis_frame),
     _step_height(DEFAULT_GROUND_CLEARNESS)
 {
-    if(!setCurrentState(_robot, StateMachine::kDoubleSupport)) //here we assumes robot start in double support
+    if(!initFromRobot(robot, StateMachine::kDoubleSupport)) //here we assumes robot start in double support
         std::cout<<"ERROR! CAN NOT SET CURRENT STATE!"<<std::endl;
     _current_state.current_phase_knot_num = DEFAULT_CURRENT_PHASE_KNOT_NUM+10;
 
@@ -80,7 +79,7 @@ bool Walker::setCurrentState(const AbstractVariable &state)
     return true;
 }
 
-bool Walker::setCurrentState(const XBot::ModelInterface &robot,
+bool Walker::initFromRobot(const XBot::ModelInterface &robot,
                              const unsigned int contact_state)
 {
     bool a;
