@@ -79,7 +79,7 @@ public:
 
     void setStepHeight(const double height)
     {
-        if(height > 0.)
+        if(height >= 0.)
             _step_height = height;
     }
 
