@@ -168,7 +168,7 @@ TEST_F(testMPC, test_walker)
     this->current_state.pelvis.pos<<tmp.translation();
 
     this->current_state.contact_state = legged_robot::StateMachine::kDoubleSupport;
-    this->current_state.current_phase_knot_num = 10;
+    this->current_state.current_phase_knot_num = DEFAULT_CURRENT_PHASE_KNOT_NUM;
 
     int loops = 100; //10 secs
 

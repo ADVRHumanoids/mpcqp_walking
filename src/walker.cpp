@@ -37,7 +37,7 @@ Walker::Walker(XBot::ModelInterface &robot, const double dT,
 {
     if(!initFromRobot(robot, StateMachine::kDoubleSupport)) //here we assumes robot start in double support
         std::cout<<"ERROR! CAN NOT SET CURRENT STATE!"<<std::endl;
-    _current_state.current_phase_knot_num = DEFAULT_CURRENT_PHASE_KNOT_NUM+10;
+    _current_state.current_phase_knot_num = DEFAULT_CURRENT_PHASE_KNOT_NUM;
 
     _robot_lipm.reset(new LIPM(dT, _current_state.com.pos[2]));
 
