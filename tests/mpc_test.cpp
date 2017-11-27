@@ -39,6 +39,7 @@ public:
     }
 
     virtual ~testMPC() {
+        logger->flush();
 
     }
 

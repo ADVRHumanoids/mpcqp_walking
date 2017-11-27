@@ -26,6 +26,7 @@ public:
     }
 
     virtual ~testMPC2() {
+        logger->flush();
 
     }
 
