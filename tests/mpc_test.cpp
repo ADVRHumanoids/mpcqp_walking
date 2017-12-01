@@ -11,9 +11,9 @@ class testMPC: public ::testing::Test {
 public:
     testMPC():
         ctrl_loop(0.1), //good value
-        com_z(0.5),
-        foot_span(0.1),
-        sm()
+        com_z(0.6),
+        foot_span(0.3),
+        sm(10, 5)
     {
         foot_size<<0.2,0.1;
 
@@ -72,8 +72,8 @@ TEST_F(testMPC, test_wpg)
 
     // Here we set thing wrt the world frame
     this->current_state.com.pos<<0.0, 0.0, this->com_z;
-    this->current_state.lsole.pos<<0.0, this->foot_span, 0.0;
-    this->current_state.rsole.pos<<0.0, -this->foot_span, 0.0;
+    this->current_state.lsole.pos<<0.0, 0.2, 0.0; // this->foot_span/2
+    this->current_state.rsole.pos<<0.0, -0.1, 0.0; // -this->foot_span/2
     this->current_state.pelvis.pos<<0.0, 0.0, this->com_z;
 
     this->current_state.contact_state = legged_robot::StateMachine::kDoubleSupport;
