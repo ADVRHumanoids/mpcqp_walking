@@ -50,6 +50,18 @@ public:
            const std::string& l_foot_center_frame,
            const std::string& r_foot_center_frame,
            const std::string& pelvis_frame);
+
+    Walker(XBot::ModelInterface& robot, const double dT,
+           const double single_support_phase_time, const double double_support_phase_time,
+           const Eigen::Vector2d& foot_size,
+           const std::string& l_foot_center_frame,
+           const std::string& r_foot_center_frame,
+           const std::string& pelvis_frame,
+           const unsigned int &preview_walking_step,
+           const double &jerk_weight,
+           const double &velocity_weight,
+           const double &zmp_weight);
+
     ~Walker();
 
     /**

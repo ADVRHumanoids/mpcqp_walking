@@ -47,6 +47,38 @@ Walker::Walker(XBot::ModelInterface &robot, const double dT,
     _com_desired_twist_window.setZero(2,_mpc->GetOptimizationVariableNum());
 }
 
+Walker::Walker(XBot::ModelInterface& robot, const double dT,
+       const double single_support_phase_time, const double double_support_phase_time,
+       const Eigen::Vector2d& foot_size,
+       const std::string& l_foot_center_frame,
+       const std::string& r_foot_center_frame,
+       const std::string& pelvis_frame,
+       const unsigned int &preview_walking_step,
+       const double &jerk_weight,
+       const double &velocity_weight,
+       const double &zmp_weight):
+    _dT(dT),
+    _single_support_phase_time(single_support_phase_time),
+    _double_support_phase_time(double_support_phase_time),
+    _foot_size(foot_size),
+    _l_frame(l_foot_center_frame),
+    _r_frame(r_foot_center_frame),
+    _pelvis_frame(pelvis_frame),
+    _step_height(DEFAULT_GROUND_CLEARNESS)
+{
+    init(robot);
+
+    double _horizontal_center_feet_distance = _current_state.lsole.pos[1]-_current_state.rsole.pos[1];
+    _mpc.reset(new MPC(*_robot_lipm,
+                       _horizontal_center_feet_distance,
+                       _foot_size[0]/2., _foot_size[1]/2.,
+                       *_sm, preview_walking_step,
+                       jerk_weight,velocity_weight,zmp_weight));
+
+    _com_desired_twist_window.resize(2,_mpc->GetOptimizationVariableNum());
+    _com_desired_twist_window.setZero(2,_mpc->GetOptimizationVariableNum());
+}
+
 bool Walker::init(XBot::ModelInterface &robot)
 {
     if(!initFromRobot(robot, StateMachine::kDoubleSupport)) //here we assumes robot start in double support
