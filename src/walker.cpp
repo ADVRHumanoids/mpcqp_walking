@@ -35,22 +35,9 @@ Walker::Walker(XBot::ModelInterface &robot, const double dT,
     _pelvis_frame(pelvis_frame),
     _step_height(DEFAULT_GROUND_CLEARNESS)
 {
-    if(!initFromRobot(robot, StateMachine::kDoubleSupport)) //here we assumes robot start in double support
-        std::cout<<"ERROR! CAN NOT SET CURRENT STATE!"<<std::endl;
-    _current_state.current_phase_knot_num = DEFAULT_CURRENT_PHASE_KNOT_NUM;
-
-    _robot_lipm.reset(new LIPM(dT, _current_state.com.pos[2]));
-
-    if(single_support_phase_time >= dT && double_support_phase_time >= dT)
-        _sm.reset(new StateMachine(int(single_support_phase_time/dT),
-                                   int(double_support_phase_time/dT)));
-    else
-        std::cout<<"ERROR! SINGLE/DOUBLE SUPPORT PHASE < dT!"<<std::endl;
-
+    init(robot);
 
     double _horizontal_center_feet_distance = _current_state.lsole.pos[1]-_current_state.rsole.pos[1];
-
-
     _mpc.reset(new MPC(*_robot_lipm,
                        _horizontal_center_feet_distance,
                        _foot_size[0]/2., _foot_size[1]/2.,
@@ -58,6 +45,29 @@ Walker::Walker(XBot::ModelInterface &robot, const double dT,
 
     _com_desired_twist_window.resize(2,_mpc->GetOptimizationVariableNum());
     _com_desired_twist_window.setZero(2,_mpc->GetOptimizationVariableNum());
+}
+
+bool Walker::init(XBot::ModelInterface &robot)
+{
+    if(!initFromRobot(robot, StateMachine::kDoubleSupport)) //here we assumes robot start in double support
+    {
+        std::cout<<"ERROR! CAN NOT SET CURRENT STATE!"<<std::endl;
+        return false;
+    }
+    _current_state.current_phase_knot_num = DEFAULT_CURRENT_PHASE_KNOT_NUM;
+
+    _robot_lipm.reset(new LIPM(_dT, _current_state.com.pos[2]));
+
+    if(_single_support_phase_time >= _dT && _double_support_phase_time >= _dT)
+        _sm.reset(new StateMachine(int(_single_support_phase_time/_dT),
+                                   int(_double_support_phase_time/_dT)));
+    else
+    {
+        std::cout<<"ERROR! SINGLE/DOUBLE SUPPORT PHASE < dT!"<<std::endl;
+        return false;
+    }
+
+
 }
 
 void Walker::setReference(const Eigen::Vector2d& xy_com_twist)

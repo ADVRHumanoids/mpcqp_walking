@@ -101,6 +101,8 @@ private:
     boost::shared_ptr<StateMachine> _sm;
     boost::shared_ptr<MPC> _mpc;
 
+    bool init(XBot::ModelInterface &robot);
+
     bool initFromRobot(const XBot::ModelInterface& robot,
                          const unsigned int contact_state);
 
