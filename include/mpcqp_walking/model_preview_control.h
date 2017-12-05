@@ -92,8 +92,11 @@ public:
               const double &velocity_weight,
               const double &zmp_weight);
 
-    void Next(AbstractVariable &next_state, AbstractVariable &current_state, const Eigen::VectorXd &dXkp1_ref, const Eigen::VectorXd &dYkp1_ref,
-              const double ground_clearness = DEFAULT_GROUND_CLEARNESS);
+    void Next(AbstractVariable &next_state,
+              AbstractVariable &current_state,
+              const Eigen::VectorXd &dXkp1_ref,
+              const Eigen::VectorXd &dYkp1_ref,
+              const double ground_clearness);
 
     unsigned int GetPreviewKnotNumber();
 

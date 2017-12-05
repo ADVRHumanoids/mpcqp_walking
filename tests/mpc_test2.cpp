@@ -47,7 +47,11 @@ public:
 
     void solve(legged_robot::AbstractVariable& new_state, legged_robot::AbstractVariable& current_state)
     {
-        wpg->Next(new_state, current_state, xy_com_desired_twist.row(0), xy_com_desired_twist.row(1));
+        wpg->Next(new_state,
+                  current_state,
+                  xy_com_desired_twist.row(0),
+                  xy_com_desired_twist.row(1),
+                  DEFAULT_GROUND_CLEARNESS);
     }
 
     double ctrl_loop;
