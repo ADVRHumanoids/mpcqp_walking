@@ -83,14 +83,14 @@ public:
     ~MPC();
     
     void Init(const LIPM &model,
-    const double &foot_span,
-    const double &foot_half_length,
-    const double &foot_half_width,
-        const StateMachine &state_machine,
-        const unsigned int &preview_walking_step = DEFAULT_PREVIEW_WALKING_STEP,
-        const double &jerk_weight = DEFAULT_JERK_WEIGHT,
-        const double &velocity_weight = DEFAULT_VELOCITY_WEIGHT,
-        const double &zmp_weight = DEFAULT_ZMP_WEIGHT);
+              const double &foot_span,
+              const double &foot_half_length,
+              const double &foot_half_width,
+              const StateMachine &state_machine,
+              const unsigned int &preview_walking_step,
+              const double &jerk_weight,
+              const double &velocity_weight,
+              const double &zmp_weight);
 
     void Next(AbstractVariable &next_state, AbstractVariable &current_state, const Eigen::VectorXd &dXkp1_ref, const Eigen::VectorXd &dYkp1_ref,
               const double ground_clearness = DEFAULT_GROUND_CLEARNESS);
