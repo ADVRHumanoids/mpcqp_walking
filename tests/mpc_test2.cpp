@@ -5,6 +5,9 @@
 #include <mpcqp_walking/state_machine.h>
 #include <boost/shared_ptr.hpp>
 
+#define DEFAULT_SINGLE_SUPPORT_KNOT_NUM 15
+#define DEFAULT_DOUBLE_SUPPORT_KNOT_NUM 1
+
 namespace {
 
 class testMPC2: public ::testing::Test {
@@ -13,7 +16,7 @@ public:
         ctrl_loop(0.1), //good value
         com_z(0.5),
         foot_span(0.2),
-        sm()
+        sm(DEFAULT_SINGLE_SUPPORT_KNOT_NUM, DEFAULT_DOUBLE_SUPPORT_KNOT_NUM)
     {
         foot_size<<0.2,0.1;
 

@@ -11,13 +11,16 @@ std::string robotology_root = std::getenv("ROBOTOLOGY_ROOT");
 std::string relative_path = "/configs/ADVR_shared/cogimon/configs/config_cogimon.yaml";
 std::string _path_to_cfg = robotology_root + relative_path;
 
+#define DEFAULT_SINGLE_SUPPORT_KNOT_NUM 15
+#define DEFAULT_DOUBLE_SUPPORT_KNOT_NUM 1
+
 namespace {
 
 class testMPC: public ::testing::Test {
 public:
     testMPC():
         ctrl_loop(0.1), //good value
-        sm()
+        sm(DEFAULT_SINGLE_SUPPORT_KNOT_NUM, DEFAULT_DOUBLE_SUPPORT_KNOT_NUM)
     {
         _model = XBot::ModelInterface::getModel(_path_to_cfg);
 

@@ -51,8 +51,8 @@ public:
      * NOTE: the time of the double support is given by:
      *  double_support_knot_num * knot_time
      */
-    StateMachine(const unsigned int &single_support_knot_num = DEFAULT_SINGLE_SUPPORT_KNOT_NUM,
-                 const unsigned int &double_support_knot_num = DEFAULT_DOUBLE_SUPPORT_KNOT_NUM);
+    StateMachine(const unsigned int &single_support_knot_num,
+                 const unsigned int &double_support_knot_num);
     ~StateMachine();
 
     unsigned int SetStartState(const unsigned int &contact_state, const unsigned int &current_phase_knot_num);

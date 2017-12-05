@@ -17,7 +17,8 @@ MPC::MPC(const double &com_height,
          const double &jerk_weight,
          const double &velocity_weight,
          const double &zmp_weight,
-         const double &gravity)
+         const double &gravity):
+    state_machine_(0,0)
 {
     Init(LIPM(knot_time, com_height, gravity),
          foot_span,
@@ -35,7 +36,8 @@ MPC::MPC(const LIPM &model,
          const unsigned int &preview_walking_step,
          const double &jerk_weight,
          const double &velocity_weight,
-         const double &zmp_weight)
+         const double &zmp_weight):
+    state_machine_(0,0)
 {
     Init(model,
          foot_span,
