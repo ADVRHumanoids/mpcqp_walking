@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 cogimon
+  Copyright (C) 2017 WALK-MAN, cogimon
   Author:  Yangwei You, Enrico Mingo Hoffman
   email: yangwei.you@iit.it, enrico.mingo@iit.it
   This program is free software: you can redistribute it and/or modify
