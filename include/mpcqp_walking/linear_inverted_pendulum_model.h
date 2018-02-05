@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 cogimon
+  Copyright (C) 2017 WALK-MAN, cogimon
   Author:  , Enrico Mingo Hoffman
   email:  , enrico.mingo@iit.it
 
